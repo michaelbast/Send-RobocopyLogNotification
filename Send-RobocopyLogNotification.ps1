@@ -12,7 +12,6 @@ $deletedPercentage = 0.03 #warn if more than $deletedPercentage files are delete
 $mailFrom = 'from@domain.com'
 $mailTo = 'to@domain.com'
 $mailSubject = '[Customer] Fehler bei Dateibackup'
-$mailContent = ""
 $mailSmtpServer = 'smtp.domain.com'
 #if smtp auth required run next line once, add the line after to Send-MailMessage
 #Read-Host -AsSecureString | ConvertFrom-SecureString | Out-File -FilePath $env:LOCALAPPDATA\$mailFrom".securestring"
@@ -26,6 +25,7 @@ if ($env:USERDNSDOMAIN) { $localComputername += "." + ($env:USERDNSDOMAIN) }
 
 
 $problemFound = $false
+$mailContent = ""
 
 # check if LastWriteTime of the expected number of logfiles is within the interval
 Get-ChildItem -Path $logPath\*.txt | Sort-Object -Property LastWriteTime | Select-Object -Last $logCount | `
