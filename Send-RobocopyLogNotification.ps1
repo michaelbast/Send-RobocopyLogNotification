@@ -30,7 +30,7 @@ $mailContent = ""
 # check if LastWriteTime of the expected number of logfiles is within the interval
 Get-ChildItem -Path $logPath\*.txt | Sort-Object -Property LastWriteTime | Select-Object -Last $logCount | `
 	ForEach-Object { if ($_.LastWriteTime -lt (Get-Date).AddDays(-$logInterval)) { $problemFound = $true } }
-    
+
 if ($problemFound) {
     $mailContent += "Datei Backup NICHT erfolgreich auf $localComputername`n`n"
     $mailContent += "Mindestens ein Logfile ist nicht aktuell"
@@ -44,7 +44,7 @@ if ($problemFound) {
         $failedFound = $false
         $failed = @()
         $failedTemp = ""
-		
+
         Get-Content -Path $Datei | ForEach-Object {
             #check line for summary
 			if ($_ -match "           Insgesamt   Kopiert*") { $summaryFound = $true }
@@ -62,7 +62,7 @@ if ($problemFound) {
                 $failedFound = $false
             }
 		}
-        
+
         if ($summaryFound) {
             #get FAILED count and Extras count
             $summary | Select-Object -Skip 1 -First 2 | `
@@ -78,7 +78,7 @@ if ($problemFound) {
             #summary not found, send notification
             $problemFound = $true
         }
-        
+
 		if ($problemFound) {
             $problemFound = $false
             $mailContent += "Datei Backup NICHT erfolgreich auf $localComputername`n`n"
