@@ -7,15 +7,14 @@
 $logPath = 'C:\Backup-Script\Logs'
 $logCount = 8 #number of logfiles written in interval
 $logInterval = 1 #interval in days
-$deletedPercentage = 0.03 #warn if more than $deletedPercentage files are deleted
+$deletedPercentage = 0.05 #warn if more than $deletedPercentage files are deleted
 
 $mailFrom = 'from@domain.com'
-$mailTo = 'to@domain.com'
+$mailTo = "recipient1@domainA.com", "recipient2@domainB.com"
 $mailSubject = '[Customer] Fehler bei Dateibackup'
 $mailSmtpServer = 'smtp.domain.com'
-#if smtp auth required run next line once, add the line after to Send-MailMessage
+#if smtp auth required run next line once, remove # in line with Send-MailMessage
 #Read-Host -AsSecureString | ConvertFrom-SecureString | Out-File -FilePath $env:LOCALAPPDATA\$mailFrom".securestring"
-#-Port 587 -UseSsl -Credential (New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $mailFrom,(Get-Content -Path $env:LOCALAPPDATA\$mailFrom".securestring" | ConvertTo-SecureString))
 #endregion variables
 
 
@@ -34,7 +33,7 @@ Get-ChildItem -Path $logPath\*.txt | Sort-Object -Property LastWriteTime | Selec
 if ($problemFound) {
     $mailContent += "Datei Backup NICHT erfolgreich auf $localComputername`n`n"
     $mailContent += "Mindestens ein Logfile ist nicht aktuell"
-    Send-MailMessage -From $mailFrom -To $mailTo -Subject $mailSubject -Body $mailContent -SmtpServer $mailSmtpServer
+    Send-MailMessage -From $mailFrom -To $mailTo -Subject $mailSubject -Body $mailContent -SmtpServer $mailSmtpServer #-Port 587 -UseSsl -Credential (New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $mailFrom,(Get-Content -Path $env:LOCALAPPDATA\$mailFrom".securestring" | ConvertTo-SecureString))
 } else {
     # check for FAILED entries and lookup summary
     $Dateien = Get-ChildItem -Path $logPath\*.txt | Sort-Object -Property LastWriteTime | Select-Object -Last $logCount
@@ -98,7 +97,7 @@ if ($problemFound) {
 	}
 
     if ($mailContent -ne "") {
-        Send-MailMessage -From $mailFrom -To $mailTo -Subject $mailSubject -Body $mailContent -SmtpServer $mailSmtpServer
+        Send-MailMessage -From $mailFrom -To $mailTo -Subject $mailSubject -Body $mailContent -SmtpServer $mailSmtpServer #-Port 587 -UseSsl -Credential (New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $mailFrom,(Get-Content -Path $env:LOCALAPPDATA\$mailFrom".securestring" | ConvertTo-SecureString))
     }
 }
 #endregion code
