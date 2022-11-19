@@ -97,6 +97,7 @@ if ($problemFound) {
 	}
 
     if ($mailContent -ne "") {
+    	#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         Send-MailMessage -From $mailFrom -To $mailTo -Subject $mailSubject -Body $mailContent -SmtpServer $mailSmtpServer #-Port 587 -UseSsl -Credential (New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $mailFrom,(Get-Content -Path $env:LOCALAPPDATA\$mailFrom".securestring" | ConvertTo-SecureString))
     }
 }
